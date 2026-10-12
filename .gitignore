@@ -1,0 +1,11 @@
+node_modules
+dist
+storybook-static
+*.log
+.DS_Store
+.npmrc
+.env
+.next
+next-env.d.ts
+*.tsbuildinfo
+coverage

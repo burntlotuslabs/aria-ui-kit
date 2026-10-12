@@ -1,0 +1,32 @@
+name: CI
+on:
+  push: { branches: [main, develop] }
+  pull_request: { branches: [main, develop] }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check            # Biome: lint + format + import order
+      - run: pnpm typecheck        # builds the library first: next-smoke type-checks against dist
+      - run: pnpm test:coverage:ci # unit tests + 80% coverage gate on the library
+      - run: pnpm --filter demo test
+      - run: pnpm build
+
+  browser:
+    # Real-Chromium checks: every story as a test (play functions + axe incl. color contrast),
+    # and the built package rendered by a Next.js app-router app (SSR + hydration).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter demo exec playwright install --with-deps chromium
+      - run: pnpm test:stories
+      - run: pnpm test:smoke

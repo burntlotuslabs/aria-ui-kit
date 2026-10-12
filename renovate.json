@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "group:monorepos", ":semanticCommits"],
+  "rangeStrategy": "bump",
+  "lockFileMaintenance": { "enabled": true, "schedule": ["before 6am on monday"] },
+  "packageRules": [
+    { "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"], "groupName": "react" },
+    { "matchPackageNames": ["react-aria-components"], "groupName": "react-aria" },
+    { "matchPackageNames": ["/^@storybook//", "storybook"], "groupName": "storybook" },
+    { "matchPackageNames": ["@biomejs/biome"], "groupName": "biome" },
+    { "matchDepTypes": ["peerDependencies"], "enabled": false }
+  ]
+}

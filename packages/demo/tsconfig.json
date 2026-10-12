@@ -1,0 +1,8 @@
+{
+  "extends": "../aria-ui-kit/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "@burntlotuslabs/aria-ui-kit": ["../aria-ui-kit/src/index.ts"] }
+  },
+  "include": ["src", ".storybook"]
+}

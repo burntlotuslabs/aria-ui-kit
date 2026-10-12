@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@burntlotuslabs/aria-ui-kit/tokens.css";
+/* The demo's own markup uses the kit's semantic utilities too, so scan the library sources. */
+@source "../../aria-ui-kit/src";

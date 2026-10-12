@@ -1,0 +1,60 @@
+name: Publish Package to NPM
+# Tag format: <package-folder>/v<version>, e.g. aria-ui-kit/v0.1.0 or aria-ui-kit/v0.2.0-beta.0
+on:
+  push:
+    tags: ['*/v*']
+permissions:
+  contents: read
+  id-token: write # npm provenance
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm, registry-url: 'https://registry.npmjs.org' }
+
+      - name: Extract package info
+        id: pkg
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "folder=${TAG%%/v*}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG##*/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag matches package.json and sits on main
+        run: |
+          F="packages/${{ steps.pkg.outputs.folder }}/package.json"
+          test -f "$F" || { echo "::error::$F not found"; exit 1; }
+          V=$(node -p "require('./$F').version")
+          [ "$V" = "${{ steps.pkg.outputs.version }}" ] || { echo "::error::Version mismatch: tag ${{ steps.pkg.outputs.version }} vs package.json $V"; exit 1; }
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo "::error::Tagged commit is not on main"; exit 1; }
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm typecheck
+      - run: pnpm test:coverage:ci
+      # Same real-browser gates as CI: every story as a test (play functions + axe contrast), and the built
+      # package rendered by Next (SSR, hydration, no theme flash). A tag cannot publish past a failure here.
+      - run: pnpm --filter demo exec playwright install --with-deps chromium
+      - run: pnpm test:stories
+      - run: pnpm test:smoke
+      - run: pnpm --filter "./packages/${{ steps.pkg.outputs.folder }}" build
+
+      - name: Validate dist
+        working-directory: packages/${{ steps.pkg.outputs.folder }}
+        run: for f in dist/index.js dist/index.cjs dist/index.d.ts dist/styles.css; do test -f "$f" || { echo "::error::missing $f"; exit 1; }; done
+
+      - name: Publish
+        working-directory: packages/${{ steps.pkg.outputs.folder }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          V="${{ steps.pkg.outputs.version }}"
+          if [[ "$V" == *-* ]]; then
+            T=$(echo "${V#*-}" | sed -E 's/^([a-zA-Z]+).*/\1/'); T="${T:-pre}"
+            pnpm publish --no-git-checks --provenance --tag "$T"
+          else
+            pnpm publish --no-git-checks --provenance
+          fi

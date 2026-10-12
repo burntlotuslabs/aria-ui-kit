@@ -1,0 +1,28 @@
+{
+  "name": "next-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Smoke test: the BUILT @burntlotuslabs/aria-ui-kit rendered by a Next.js app-router app (SSR + hydration). `next build` failing means the package is not usable from Next.",
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .next",
+    "test:smoke": "node check-hydration.mjs"
+  },
+  "dependencies": {
+    "@burntlotuslabs/aria-ui-kit": "workspace:*",
+    "next": "^16.4.0",
+    "react": "^19.2.0",
+    "react-aria-components": "^1.22.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "playwright": "^1.64.0",
+    "typescript": "^5.9.0"
+  }
+}

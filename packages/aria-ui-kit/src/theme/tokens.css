@@ -1,0 +1,139 @@
+/*
+ * THE THEME CONTRACT.
+ *
+ * Every component in the kit styles itself with the semantic Tailwind utilities defined in
+ * `@theme inline` below (bg-surface, text-fg, bg-accent, border-edge, …). Those utilities read
+ * CSS variables, and the variables are the only thing a theme sets. So:
+ *
+ *   - Light/dark is a class on <html> (`.dark`), switching the variable values.
+ *   - A brand theme is a ThemeConfig object (see themes.ts) that ThemeProvider writes onto the
+ *     root element as inline custom properties, overriding the defaults here. A consuming app
+ *     owns one theme file and never touches component code.
+ *
+ * Variable values are raw channel triplets or hex; anything Tailwind can read via var() works.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces, from the page canvas up through raised/interactive layers */
+  --ui-canvas: #f8fafc;
+  --ui-surface: #ffffff;
+  --ui-surface-2: #f1f5f9;
+  --ui-surface-3: #e2e8f0;
+
+  /* Borders */
+  --ui-edge: #cbd5e1;
+  --ui-edge-strong: #64748b;
+
+  /* Text */
+  --ui-fg: #0f172a;
+  --ui-fg-muted: #475569;
+  --ui-fg-subtle: #5f6e84;
+
+  /* Brand accent: solid fill, its hover, the text that sits on it, and a soft tint.
+     `accent` doubles as text-on-surface (links, selected tabs), so it must clear 4.5:1. */
+  --ui-accent: #4f46e5;
+  --ui-accent-hover: #4338ca;
+  --ui-accent-fg: #ffffff;
+  --ui-accent-soft: #e0e7ff;
+  --ui-accent-soft-fg: #3730a3;
+
+  /* Status. `danger` is a fill (needs `danger-fg` on it); `danger-text` is for error copy on a surface. */
+  --ui-danger: #e11d48;
+  --ui-danger-hover: #be123c;
+  --ui-danger-fg: #ffffff;
+  --ui-danger-text: #be123c;
+  --ui-danger-soft: #ffe4e6;
+  --ui-danger-soft-fg: #881337;
+
+  --ui-success-soft: #d1fae5;
+  --ui-success-soft-fg: #064e3b;
+  --ui-warning-soft: #fef3c7;
+  --ui-warning-soft-fg: #78350f;
+  --ui-info-soft: #e0f2fe;
+  --ui-info-soft-fg: #0c4a6e;
+
+  /* Focus ring and overlay scrim */
+  --ui-focus: #6366f1;
+  --ui-scrim: rgb(15 23 42 / 0.55);
+  --ui-tooltip: #0f172a;
+  --ui-tooltip-fg: #ffffff;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --ui-canvas: #0b1220;
+  --ui-surface: #111a2b;
+  --ui-surface-2: #182236;
+  --ui-surface-3: #223049;
+
+  --ui-edge: #2f3d55;
+  --ui-edge-strong: #7d8ba3;
+
+  --ui-fg: #e6ebf3;
+  --ui-fg-muted: #a6b2c5;
+  --ui-fg-subtle: #7f8ca0;
+
+  --ui-accent: #818cf8;
+  --ui-accent-hover: #a5b4fc;
+  --ui-accent-fg: #0b1220;
+  --ui-accent-soft: #2a2f6b;
+  --ui-accent-soft-fg: #c7d2fe;
+
+  --ui-danger: #fb7185;
+  --ui-danger-hover: #fda4af;
+  --ui-danger-fg: #1f0a0f;
+  --ui-danger-text: #fda4af;
+  --ui-danger-soft: #4c1d2a;
+  --ui-danger-soft-fg: #fecdd3;
+
+  --ui-success-soft: #113c2f;
+  --ui-success-soft-fg: #a7f3d0;
+  --ui-warning-soft: #422f0a;
+  --ui-warning-soft-fg: #fde68a;
+  --ui-info-soft: #0f3550;
+  --ui-info-soft-fg: #bae6fd;
+
+  --ui-focus: #a5b4fc;
+  --ui-scrim: rgb(0 0 0 / 0.65);
+  --ui-tooltip: #e6ebf3;
+  --ui-tooltip-fg: #0b1220;
+}
+
+/* Map the variables to Tailwind utilities. `inline` keeps the var() reference live at runtime. */
+@theme inline {
+  --color-canvas: var(--ui-canvas);
+  --color-surface: var(--ui-surface);
+  --color-surface-2: var(--ui-surface-2);
+  --color-surface-3: var(--ui-surface-3);
+  --color-edge: var(--ui-edge);
+  --color-edge-strong: var(--ui-edge-strong);
+  --color-fg: var(--ui-fg);
+  --color-fg-muted: var(--ui-fg-muted);
+  --color-fg-subtle: var(--ui-fg-subtle);
+  --color-accent: var(--ui-accent);
+  --color-accent-hover: var(--ui-accent-hover);
+  --color-accent-fg: var(--ui-accent-fg);
+  --color-accent-soft: var(--ui-accent-soft);
+  --color-accent-soft-fg: var(--ui-accent-soft-fg);
+  --color-danger: var(--ui-danger);
+  --color-danger-hover: var(--ui-danger-hover);
+  --color-danger-fg: var(--ui-danger-fg);
+  --color-danger-text: var(--ui-danger-text);
+  --color-danger-soft: var(--ui-danger-soft);
+  --color-danger-soft-fg: var(--ui-danger-soft-fg);
+  --color-success-soft: var(--ui-success-soft);
+  --color-success-soft-fg: var(--ui-success-soft-fg);
+  --color-warning-soft: var(--ui-warning-soft);
+  --color-warning-soft-fg: var(--ui-warning-soft-fg);
+  --color-info-soft: var(--ui-info-soft);
+  --color-info-soft-fg: var(--ui-info-soft-fg);
+  --color-focus: var(--ui-focus);
+  --color-scrim: var(--ui-scrim);
+  --color-tooltip: var(--ui-tooltip);
+  --color-tooltip-fg: var(--ui-tooltip-fg);
+}
